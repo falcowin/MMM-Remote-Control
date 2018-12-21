@@ -1,4 +1,4 @@
-# Magic Mirror Module: Remote Control
+# Magic Mirror Module: Remote Control w/ RESTful API
 
 This module for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) allows you to quickly shutdown your mirror through a web browser.
 The website should work fine on any device (desktop, smart phone, tablet, ...).
@@ -9,6 +9,8 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 ![The Power Menu](.github/power.png)
 ![Hide and Show a Module](.github/hide_show_module.gif)
 
+**New in Version 2.0.0:** The module now includes a more RESTful API for controlling all aspects of your mirror from other network-enabled devices and controllers--anything that can open a URL. See the [API README](API/README.md) for more info!
+
 ## Installation
 
 ### Quick install
@@ -16,7 +18,7 @@ Additionally you can hide and show modules on your mirror and do other cool stuf
 If you followed the default installation instructions for the [Magic Mirror²](https://github.com/MichMich/MagicMirror) project, you should be able to use the automatic installer.
 The following command will download the installer and execute it:
 ```bash
-bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/master/installer.sh)"
+bash -c "$(curl -s https://raw.githubusercontent.com/shbatm/MMM-Remote-Control/develop/installer.sh)"
 ```
 
 ### Manual install
@@ -24,7 +26,7 @@ bash -c "$(curl -s https://raw.githubusercontent.com/Jopyth/MMM-Remote-Control/m
 - (1) Clone this repository in your `modules` folder, and install dependencies:
 ```bash
 cd ~/MagicMirror/modules # adapt directory if you are using a different one
-git clone https://github.com/Jopyth/MMM-Remote-Control.git
+git clone https://github.com/shbatm/MMM-Remote-Control.git
 cd MMM-Remote-Control
 npm install
 ```
@@ -36,6 +38,10 @@ npm install
     // uncomment the following line to show the URL of the remote control on the mirror
     // , position: 'bottom_left'
     // you can hide this module afterwards from the remote control itself
+    config: {
+        customCommand: {},  // Optional, See below for details on how to use
+        apiKey: "",         // Optional, See API/README.md for details
+    }
 },
 ```
 
@@ -101,21 +107,13 @@ If this happens, simply reconfigure and save it again.
 ## Call methods from other modules
 
 You can call any of the methods provided in the UI directly through a GET request, or a module notification.
-For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems.
+For example you can use [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically shutdown your RasberryPi at a certain time, or integrate it with home automation systems. Or use  [MMM-Navigate](https://github.com/Ax-LED/MMM-Navigate) to allow direct actions from your Mirror by using a rotating button. 
 
 ### Examples
 
-- Example for a GET request to trigger a RaspberryPi restart:
+- Example for a REST API GET request to trigger a RaspberryPi restart:
 ```
-http://192.168.xxx.xxx:8080/remote?action=RESTART
-```
-
-- Example for a notification schedule for [MMM-ModuleScheduler](https://forum.magicmirror.builders/topic/691/mmm-modulescheduler) to automatically switch your monitor on and off with :
-```javascript
-notification_schedule: [
-    {notification: 'REMOTE_ACTION', schedule: '30 9 * * *', payload: {action: 'MONITOROFF'}},
-    {notification: 'REMOTE_ACTION', schedule: '30 18 * * *', payload: {action: 'MONITORON'}}
-]
+http://192.168.xxx.xxx:8080/api/restart
 ```
 
 - Example to trigger a RaspberryPi restart in your module:
@@ -123,25 +121,55 @@ notification_schedule: [
 this.sendNotification('REMOTE_ACTION', {action: 'RESTART'});
 ```
 
+See some specific examples for controlling your mirror from other modules and add your own examples [in the Wiki page here](https://github.com/shbatm/MMM-Remote-Control/wiki/Examples-for-Controlling-from-Another-Module)
+
 ### List of actions
 
-| action | description |
-| ------------- | ------------- |
+#### System Control:
+
+| Action | Description |
+| :-: | ------------- |
 | SHUTDOWN | Shutdown your RaspberryPi |
 | REBOOT | Restart your RaspberryPi |
+| MONITORON | Switch your display on. Also sends a `"USER_PRESENCE": true` notification. |
+| MONITOROFF | Switch your display off. Also sends a `"USER_PRESENCE": false` notification. |
+| MONITORTOGGLE | Toggle the display on or off (with respective `"USER_PRESENCE"` notification. |
+| MONITORSTATUS | Report back the monitor status (on or off) |
+
+#### MagicMirror Control:
+
+| Action | Description |
+| :-: | ------------- |
 | RESTART | Restart your MagicMirror |
-| MONITORON | Switch your display on |
-| MONITOROFF | Switch your display off |
+| REFRESH | Refresh mirror page |
+| UPDATE | Update MagicMirror and any of it's modules |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
 | BRIGHTNESS | Change mirror brightness, with the new value specified by `value`. `100` equals the default, possible range is between `10` and `200`. |
-| HIDE | Hide a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
-| SHOW | Show a module, with the identifier specified by `module` (see `MODULE_DATA` action). |
+
+#### MagicMirror Electron Browser Window Control:
+
+| Action | Description |
+| :-: | ------------- |
+| MINIMIZE | Minimize the browser window. |
+| TOGGLEFULLSCREEN | Toggle fullscreen mode on and off. |
+| DEVTOOLS | Open the DevTools console window. |
+
+#### Module Control:
+
+| Action | Description |
+| :-: | ------------- |
+| HIDE | Hide a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
+| SHOW | Show a module, with the name (or identifier specified by `module`--see `MODULE_DATA` action). |
 | MODULE_DATA | Returns a JSON format of the data displayed in the UI, including all valid identifiers for the `HIDE` and `SHOW` action. |
-| REFRESH | Refresh mirror page |
+
+#### Alerts and Notifications:
+
+| Action | Description |
+| :-: | ------------- |
 | SHOW_ALERT | Show Default Alert/Notification |
 | HIDE_ALERT | Hide Default Alert/Notification |
-| UPDATE | Update MagicMirror and any of it's modules |
-| NOTIFICATION | Send a notification to all modules (see [Notification Request](#notification-request)). |
+| USER_PRESENCE | Will send a notification "USER_PRESENCE" = true or false (according to "value" to all other modules. See examples above|
+| NOTIFICATION | To send a notification to all modules, see the example in the [API README](API/README.md) |
 
 ### Format of module data response
 
@@ -159,25 +187,16 @@ The response will be in the JSON format, here is an example:
 }
 ```
 
-### Notification Request
+### Using Custom Commands
 
-To send a notification to all modules, send the following GET-parameters.
+Depending on your installation, some `shell` commands used by this module are not appropriate and can be overwritten by something that will work for you. To overwrite the commands, add a `customCommand` object to your config section.  The following commands are supported:
 
-| key | value |
-| --- | ----- |
-| action | `NOTIFICATION`<br>**Required** |
-| notification | The notification to send, e.g. `ARTICLE_MORE_DETAILS`, `SHOW_ALERT` or `HIDE_ALERT`.<br>**Required** |
-| payload | A stringified JSON object with the payload for the notification.<br>**Optional** if absent, an empty payload (`{}`) is assumed. |
-
-Examples:
-
-```
-?action=NOTIFICATION&notification=ARTICLE_MORE_DETAILS
-
-?action=NOTIFICATION&notification=SHOW_ALERT&payload={%22title%22:%22Alert%22,%22message%22:%22This%20is%an%20alert.%22}
-(Payload is URL-encoded form of {"title":"Alert","message":"This is an alert."})
-
-?action=NOTIFICATION&notification=HIDE_ALERT
+```js
+    customCommand: {
+        monitorOnCommand: 'shell command to turn on your monitor',
+        monitorOffCommand: 'shell command to turn off your monitor',
+        monitorStatusCommand: 'shell command to return status of monitor, must return either "HDMI" or "true" if screen is on; or "TV is Off" or "false" if it is off to be recognized'
+    }
 ```
 
 ## License
