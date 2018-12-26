@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
 - Module Control menu - Automatically generated from the API to control the different modules you have installed, based on their `notificationReceived` function.
 - Custom menu items. See [Custom Menu Items in README](README.md#custom-menu-items)
+- Added "STOP" Remote Action command to stop the MagicMirror PM2 script.
 
 ### Changed
 
@@ -28,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Added USER_PRESENCE controls from [AgP42](https://github.com/AgP42)
 - Added translations from [BKeyport](https://github.com/Bkeyport)
 - Added SHOW/HIDE/TOGGLE ALL modules option per request from [Rene1709](https://github.com/Rene1709)
+- Use PM2 API to control restarts/stops of MM. Can also support starting/stopping other PM2 scripts by passing `processName: "scriptToUse"` in the query payload.
 
 ### Upcoming Changes
 

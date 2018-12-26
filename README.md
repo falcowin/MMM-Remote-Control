@@ -42,6 +42,7 @@ npm install
         customCommand: {},  // Optional, See "Using Custom Commands" below
         customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
         showModuleApiMenu: true, // Optional, Enable the Module Controls menu
+        pm2ProcessName: "mm",  // Optional, if you don't use the default PM2 process, provide the name here.
         apiKey: "",         // Optional, See API/README.md for details
     }
 },
@@ -142,7 +143,8 @@ See some specific examples for controlling your mirror from other modules and ad
 
 | Action | Description |
 | :-: | ------------- |
-| RESTART | Restart your MagicMirror |
+| RESTART | Restart your MagicMirror (via PM2 Process) |
+| STOP | Stop the MagicMirror PM2 process |
 | REFRESH | Refresh mirror page |
 | UPDATE | Update MagicMirror and any of it's modules |
 | SAVE | Save the current configuration (show and hide status of modules, and brightness), will be applied after the mirror starts |
