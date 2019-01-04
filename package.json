@@ -26,6 +26,6 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "postinstall": "sudo npm link pm2"
+    "postinstall": "./scripts/postinstall.sh"
   }
 }
