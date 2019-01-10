@@ -1005,10 +1005,22 @@ module.exports = NodeHelper.create(Object.assign({
                 self.loadDefaultSettings();
             }
             if (notification === "REMOTE_ACTION") {
-                if ("action" in payload) {
-                    this.executeQuery(payload, { isSocket: true });
-                } else if ("data" in payload) {
-                    this.answerGet(payload, { isSocket: true });
+                if (Object.prototype.toString.call(payload) === '[object Array]') {
+                    // Array of actions present
+                    payload.forEach(remAct => {
+                        if ("action" in remAct) {
+                            this.executeQuery(remAct, { isSocket: true });
+                        } else if ("data" in remAct) {
+                            this.answerGet(remAct, { isSocket: true });
+                        }
+                    });
+                } else {
+                    // Single notification present
+                    if ("action" in payload) {
+                        this.executeQuery(payload, { isSocket: true });
+                    } else if ("data" in payload) {
+                        this.answerGet(payload, { isSocket: true });
+                    }
                 }
             }
             if (notification === "NEW_CONFIG") {
@@ -1020,9 +1032,6 @@ module.exports = NodeHelper.create(Object.assign({
                 if ("id" in this.moduleApiMenu) {
                     this.sendSocketNotification("REMOTE_CLIENT_MODULEAPI_MENU", this.moduleApiMenu);
                 }
-            }
-            if (notification === "REMOTE_NOTIFICATION_ECHO_IN") {
-                this.sendSocketNotification("REMOTE_NOTIFICATION_ECHO_OUT", payload);
             }
             if (notification === "USER_PRESENCE") {
                 this.userPresence = payload;

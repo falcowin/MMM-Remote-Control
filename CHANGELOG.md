@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [2.0.0] - 2018-12-20
+## [2.0.1-dev] - 2019-01-10 Allow Multiple Actions in one REMOTE ACTION call
+
+### Changed
+
+- `"REMOTE_ACTION"` notification now accepts an array of action objects in the playload as well as the normal single action.  This allows multiple actions to be executed in a single call (e.g. from a menu button).
+
+## [2.0.0-dev] - 2018-12-20 Extensible REST API, Dynamic Menus, and Socket Communications, plus other updates
 
 ### Added
 

@@ -211,6 +211,25 @@ this.sendSocketNotification("REMOTE_ACTION",
     });
 ```
 
+### Multiple Actions in a single call
+
+You can pass multiple actions in a single call by passing an array. The example below turns on the montior, and then turns it off again after 60s.
+
+```js
+this.sendSocketNotification("REMOTE_ACTION",
+    [{
+        action: "MONITORON"
+    },
+    {
+        action: "DELAYED",
+        did: "MONITORDELAY",
+        timeout: 60, 
+        query: {
+            action: "MONITOROFF"
+        }
+    }]);
+```
+
 Can also be used with the [API](https://documenter.getpostman.com/view/6167403/Rzfni66c) by adding `/delay?timeout=10s&did=something` to some routes.
 
 ### Using Custom Commands
