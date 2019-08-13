@@ -5,13 +5,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.0.1-dev] - 2019-01-10 Allow Multiple Actions in one REMOTE ACTION call
+## [2.0.1] - Unreleased
 
-### Changed
 
+Huge shoutout to [shbatm](https://github.com/shbatm) for his work on this new major version, which brings a new API, custom menus and commands and lots of other stuff:
+
+## [2.0.0] - 2019-02-21
+
+- A few typos in `ca` and `es` translations
+- Path to font awesome icons
+
+### Fixed
+
+Now requires MagicMirror version 2.7.
 - `"REMOTE_ACTION"` notification now accepts an array of action objects in the playload as well as the normal single action.  This allows multiple actions to be executed in a single call (e.g. from a menu button).
-
-## [2.0.0-dev] - 2018-12-20 Extensible REST API, Dynamic Menus, and Socket Communications, plus other updates
-
 ### Added
 
 - REST API interface for controlling all aspects of the MagicMirror from HTTP RESTful-style GET and POST calls, based on principles from [MMM-Api](https://github.com/juzim/MMM-Api)
@@ -24,7 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Configuration Option to send custom shell commands to use. Currently, only custom monitor on/off/status commands are supported.
 - Module Control menu - Automatically generated from the API to control the different modules you have installed, based on their `notificationReceived` function.
 - Custom menu items. See [Custom Menu Items in README](README.md#custom-menu-items)
-- Added "STOP" Remote Action command to stop the MagicMirror PM2 script.
+- Norsk bokmål translation
 
 ### Changed
 
@@ -33,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - General clean-up and standardization of status reporting for GET and POST calls, to original URLs and to new API URLs.
 - Updated to ES2015 (ES Version 6) function calls in most locations.
 - Added USER_PRESENCE controls from [AgP42](https://github.com/AgP42)
-- Added translations from [BKeyport](https://github.com/Bkeyport)
+- Added/updated french translations from [BKeyport](https://github.com/Bkeyport) and [Mysh3ll](https://github.com/Mysh3ll)
 - Added SHOW/HIDE/TOGGLE ALL modules option per request from [Rene1709](https://github.com/Rene1709)
 - Use PM2 API to control restarts/stops of MM. Can also support starting/stopping other PM2 scripts by passing `processName: "scriptToUse"` in the query payload.
 

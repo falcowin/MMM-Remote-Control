@@ -42,7 +42,6 @@ npm install
         customCommand: {},  // Optional, See "Using Custom Commands" below
         customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
         showModuleApiMenu: true, // Optional, Enable the Module Controls menu
-        pm2ProcessName: "mm",  // Optional, if you don't use the default PM2 process, provide the name here.
         apiKey: "",         // Optional, See API/README.md for details
     }
 },
